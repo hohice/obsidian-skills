@@ -48,3 +48,26 @@ OpenCode auto-discovers all `SKILL.md` files under `~/.opencode/skills/`. No cha
 | [json-canvas](skills/json-canvas) | Create and edit [JSON Canvas](https://jsoncanvas.org/) files (`.canvas`) with nodes, edges, groups, and connections |
 | [obsidian-cli](skills/obsidian-cli) | Interact with Obsidian vaults via the [Obsidian CLI](https://help.obsidian.md/cli) including plugin and theme development |
 | [defuddle](skills/defuddle) | Extract clean markdown from web pages using [Defuddle](https://github.com/kepano/defuddle-cli), removing clutter to save tokens |
+| [excalidraw-diagram](skills/excalidraw-diagram) | Generate Excalidraw diagrams from text content, creating Obsidian-ready `.md` files with flowcharts, mind maps, hierarchies, and more |
+| [mermaid-visualizer](skills/mermaid-visualizer) | Transform text content into professional Mermaid diagrams for presentations and documentation, with built-in syntax error prevention |
+| [obsidian-graph-rag](skills/obsidian-graph-rag) | Multi-turn, graph-native RAG workflow using links, tags, and properties for iterative retrieval without vector embeddings |
+
+## Demos
+
+### JSON Canvas
+
+Create visual canvases with nodes, edges, and groups for mind maps, project boards, and research layouts.
+
+![Canvas Demo](assets/canvas-demo.png)
+
+### Excalidraw Diagrams
+
+Generate hand-drawn style diagrams including flowcharts, mind maps, relationship diagrams, and timelines.
+
+![Excalidraw Demo](assets/excalidraw-demo.png)
+
+### Mermaid Visualizations
+
+Transform text into professional Mermaid diagrams optimized for presentations and documentation.
+
+![Mermaid Demo](assets/mermaid-demo.png)
