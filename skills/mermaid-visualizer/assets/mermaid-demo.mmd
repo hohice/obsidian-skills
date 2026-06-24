@@ -1,0 +1,11 @@
+graph TD
+    A[External Sources] -->|markitdown| B[Markdown Files]
+    A -->|marker| B
+    A -->|defuddle| B
+    B --> C[obsidian-graph-rag-ingest]
+    C -->|normalize| D[Obsidian Vault]
+    D --> E[obsidian-graph-rag-retrieval]
+    E --> F[Research Notes]
+    F --> G[obsidian-bases]
+    F --> H[json-canvas]
+    F --> I[mermaid-visualizer]

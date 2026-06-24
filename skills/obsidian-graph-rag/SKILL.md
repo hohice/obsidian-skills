@@ -1,53 +1,59 @@
 ---
 name: obsidian-graph-rag
-description: Multi-turn, graph-native RAG workflow for Obsidian. Uses links, tags, properties, and CLI to iteratively retrieve context without vector embeddings. Targets the current Obsidian Vault (detected via .obsidian/). Orchestrates obsidian-cli, obsidian-markdown, obsidian-bases, json-canvas, and defuddle.
+description: End-to-end graph-native RAG workflow for Obsidian. Orchestrates obsidian-graph-rag-ingest for knowledge base preparation and obsidian-graph-rag-retrieval for multi-turn retrieval and synthesis.
+allowed-tools: obsidian
+metadata:
+  version: 2.0.0
 ---
 
 # Obsidian Graph RAG
 
-A vector-embedding-free, graph-native retrieval system for Obsidian. Leverages the knowledge graph (Wikilinks, Backlinks, Tags, Properties) and CLI to perform multi-turn iterative information retrieval.
+End-to-end, vector-embedding-free RAG for Obsidian. This skill coordinates two sub-skills:
 
-## Core Principles
-- **Vault-Scoped**: Defaults to the Obsidian Vault containing `.obsidian/` in the current directory or ancestors. All retrieval is isolated to this Vault.
-- **No Vector Embeddings**: Uses symbolic retrieval + graph traversal + heuristic scoring.
-- **Multi-turn Iteration**: Maintains session state (`session.json`) to track scope, feedback, and query history across turns.
-- **CLI-Native**: All operations use `obsidian-cli` (`search`, `eval`, `read`) via the `obsidian-rag.sh` helper.
+- [`obsidian-graph-rag-ingest`](../obsidian-graph-rag-ingest/SKILL.md) — import and normalize content into your Vault
+- [`obsidian-graph-rag-retrieval`](../obsidian-graph-rag-retrieval/SKILL.md) — retrieve, synthesize, and visualize answers from your Vault
 
-## Workflow
-1. **Initialize**: Verify Vault root, create `.obsidian-rag-session/` and `session.json`.
-2. **Retrieve**: Use `obsidian-cli` for text search + graph scoring.
-3. **Iterate**: Update session scope/feedback based on user input (narrow, broaden, shift, path-trace).
-4. **Synthesize**: Generate structured research notes using `obsidian-markdown`.
-5. **Visualize**: Export to `.base` (tracking dashboard) and `.canvas` (graph visualization).
-6. **Augment** (Optional): Use `defuddle` to fetch external documentation if Vault content is insufficient.
+## When to Use the Full Pipeline
+
+Use this skill when you want to go from raw documents or web pages to synthesized research notes in one workflow.
+
+## End-to-End Workflow
+
+1. **Ingest**: Use `obsidian-graph-rag-ingest` to import and normalize sources.
+2. **Retrieve**: Use `obsidian-graph-rag-retrieval` to run graph-native retrieval against the prepared Vault.
+3. **Synthesize**: Generate research notes with `obsidian-markdown`.
+4. **Visualize** (optional): Create dashboards with `obsidian-bases` or canvases with `json-canvas`.
+
+```
+source → obsidian-graph-rag-ingest → Vault → obsidian-graph-rag-retrieval → research notes → visualization
+```
+
+## When to Use Sub-Skills Directly
+
+- Use only [`obsidian-graph-rag-ingest`](../obsidian-graph-rag-ingest/SKILL.md) when you just need to build or update a knowledge base.
+- Use only [`obsidian-graph-rag-retrieval`](../obsidian-graph-rag-retrieval/SKILL.md) when your Vault is already prepared and you only need retrieval.
 
 ## Skill Dependencies
-- **Required**: `obsidian-cli` (core retrieval & graph ops)
-- **Export**: `obsidian-markdown`, `obsidian-bases`, `json-canvas`
-- **Optional**: `defuddle` (web augmentation)
 
-## Graph Retrieval Strategy
-- **Seed**: `obsidian search query="..." limit=20` (Vault-scoped)
-- **Expand**: 1-3 hop BFS via `obsidian eval` + `app.metadataCache`
-- **Score**: `outlinks*2 + backlinks*3 + tagOverlap*5 + textScore`
-- **Filter**: tags, folders, exclude lists, score threshold
-- See [GRAPH-RETRIEVAL.md](references/GRAPH-RETRIEVAL.md) for formulas & strategies.
+- [`obsidian-graph-rag-ingest`](../obsidian-graph-rag-ingest/SKILL.md)
+- [`obsidian-graph-rag-retrieval`](../obsidian-graph-rag-retrieval/SKILL.md)
+- [`obsidian-markdown`](../obsidian-markdown/SKILL.md) — output note syntax and Quality Checklist
+- [`obsidian-bases`](../obsidian-bases/SKILL.md) — optional dashboard views
+- [`json-canvas`](../json-canvas/SKILL.md) — optional graph visualization
 
-## Multi-turn Protocol
-- Maintain `session.json` with `scope`, `feedback`, `query_history`
-- Support actions: `narrow`, `broaden`, `shift_focus`, `path_trace`, `export`
-- Always present graph metadata (`score`, `depth`, `reason`) with results
-- See [MULTI-TURN-PROTOCOL.md](references/MULTI-TURN-PROTOCOL.md) for schema & commands.
+## Core Principles
 
-## CLI Integration Rules
-- All graph ops use `obsidian eval code="..."`
-- Force JSON output: `console.log(JSON.stringify(...))`
-- Validate CLI output before parsing
-- Limit graph depth to ≤3 to prevent explosion
-- **Always verify Vault root before execution**
-- See [CLI-HELPERS.md](references/CLI-HELPERS.md) for `obsidian-rag.sh` usage.
+- **Vault-Scoped**: All work is isolated to the Obsidian Vault containing `.obsidian/`.
+- **No Vector Embeddings**: Relies on symbolic retrieval + graph traversal + heuristic scoring.
+- **Multi-turn Iteration**: Maintains session state across turns.
+- **CLI-Native**: Uses the `obsidian` CLI for Vault operations.
 
-## Export Templates
-- Research Note: See [EXPORT-TEMPLATES.md](references/EXPORT-TEMPLATES.md)
-- Bases Dashboard: See [EXPORT-TEMPLATES.md](references/EXPORT-TEMPLATES.md)
-- Canvas Graph: See [EXPORT-TEMPLATES.md](references/EXPORT-TEMPLATES.md)
+## References
+
+- [`obsidian-graph-rag-ingest`](../obsidian-graph-rag-ingest/SKILL.md)
+- [`obsidian-graph-rag-retrieval`](../obsidian-graph-rag-retrieval/SKILL.md)
+- [`obsidian-markdown`](../obsidian-markdown/SKILL.md)
+- [`obsidian-bases`](../obsidian-bases/SKILL.md)
+- [`json-canvas`](../json-canvas/SKILL.md)
+
+This skill follows the [Agent Skills specification](https://agentskills.io/specification). Validate with [`skill-spec`](../skill-spec/scripts/validate.py).

@@ -1,6 +1,8 @@
 ---
 name: json-canvas
 description: Create and edit JSON Canvas files (.canvas) with nodes, edges, groups, and connections. Use when working with .canvas files, creating visual canvases, mind maps, flowcharts, or when the user mentions Canvas files in Obsidian.
+metadata:
+  version: 1.1.0
 ---
 
 # JSON Canvas Skill
@@ -219,6 +221,24 @@ Generate 16-character lowercase hexadecimal strings (64-bit random value):
 | File preview | 300-500 | 200-400 |
 | Link preview | 250-400 | 100-200 |
 
+## Embed Markdown Notes
+
+Canvas nodes can reference existing Obsidian notes using the `file` node type:
+
+```json
+{
+  "id": "node1",
+  "type": "file",
+  "x": 100,
+  "y": 100,
+  "width": 400,
+  "height": 300,
+  "file": "Projects/Project Alpha.md"
+}
+```
+
+Use this to build research canvases or project boards from notes created with [`obsidian-markdown`](../obsidian-markdown/SKILL.md). For RAG result visualization, combine with [`obsidian-graph-rag`](../obsidian-graph-rag/SKILL.md).
+
 ## Validation Checklist
 
 After creating or editing a canvas file, verify:
@@ -242,3 +262,5 @@ See [references/EXAMPLES.md](references/EXAMPLES.md) for full canvas examples in
 
 - [JSON Canvas Spec 1.0](https://jsoncanvas.org/spec/1.0/)
 - [JSON Canvas GitHub](https://github.com/obsidianmd/jsoncanvas)
+
+This skill follows the [Agent Skills specification](https://agentskills.io/specification). Validate with [`skill-spec`](../skill-spec/scripts/validate.py).

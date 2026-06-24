@@ -1,7 +1,13 @@
 # Export Templates
 
+These are reference templates for synthesizing RAG retrieval results into Obsidian artifacts. They are not generated automatically by `obsidian-rag.sh`; use them as a starting point when creating research notes, dashboards, or graph visualizations with the relevant skills.
+
+> All `.md` output should follow the conventions in [`obsidian-markdown`](../obsidian-markdown/SKILL.md). Run the generated note through its [Quality Checklist](../obsidian-markdown/SKILL.md#quality-checklist) before saving.
+
 ## 1. Research Note (`.md`)
 Generated using `obsidian-markdown` syntax. Includes frontmatter, AI summary, cited snippets, and Mermaid graph.
+
+> For simple relationship graphs, use the Mermaid snippet below. For complex diagrams with grouping, styling, or many nodes, generate the diagram with [`mermaid-visualizer`](../mermaid-visualizer/SKILL.md) and embed the resulting code block.
 
 ```markdown
 ---
@@ -9,18 +15,24 @@ title: "RAG Research: {{query}}"
 session_id: "{{session_id}}"
 turn: {{turn}}
 confidence: {{confidence}}
-tags: [rag-research, {{tags}}]
-created: {{date}}
+date: {{date}}
+tags:
+  - rag-research
+  - {{tags}}
+aliases:
+  - "{{query}} Research"
+related:
+  - "[[RAG Session {{session_id}}]]"
 ---
 
 # {{query}} Research
 
-> [!summary] AI 综合结论
+> [!summary] AI Synthesis / AI 综合结论
 > {{summary}}
 
-## 关键上下文
+## Key Context / 关键上下文
 {{#each retrieved}}
-- [[{{basename}}]] %%图谱分: {{score}}, 深度: {{depth}}%%
+- [[{{basename}}]] %%graph score: {{score}}, depth: {{depth}} / 图谱分: {{score}}, 深度: {{depth}}%%
 {{/each}}
 
 ```mermaid
@@ -30,7 +42,7 @@ graph TD
 {{/each}}
 ```
 
-%% 检索轨迹已保存至 .obsidian-rag-session/ %%
+%% Retrieval trace saved to .obsidian-rag-session/ / 检索轨迹已保存至 .obsidian-rag-session/ %%
 ```
 
 ## 2. Bases Dashboard (`.base`)
@@ -97,9 +109,9 @@ Generated using `json-canvas` schema. Visualizes retrieval nodes and their conne
 - **Color**: `"4"` (green) if `score >= 10`, `"3"` (yellow) if `score >= 5`, `"1"` (red) otherwise
 - **Edges**: Generated from `via` field in retrieval results
 
-## Export Workflow
+## Reference Synthesis Workflow
 1. Read `session.json` and `results.json`
-2. Generate `.md` note with cited snippets
-3. Generate `.base` file for tracking dashboard
-4. Generate `.canvas` file for graph visualization
-5. Save all to `research/` folder in Vault
+2. Use the `.md` template to create a research note with cited snippets
+3. Use the `.base` template to build a tracking dashboard (via [obsidian-bases](../obsidian-bases/SKILL.md))
+4. Use the `.canvas` template to create a graph visualization (via [json-canvas](../json-canvas/SKILL.md))
+5. Save artifacts to a folder such as `research/` in the Vault

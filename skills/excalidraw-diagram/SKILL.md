@@ -2,7 +2,7 @@
 name: excalidraw-diagram
 description: Generate Excalidraw diagrams from text content for Obsidian. Use when user asks to create diagrams, flowcharts, mind maps, or visual representations in Excalidraw format. Triggers on "Excalidraw", "画图", "流程图", "思维导图", "可视化", "diagram".
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Excalidraw Diagram Generator
@@ -17,6 +17,16 @@ Create Excalidraw diagrams from text content, outputting Obsidian-ready `.md` fi
 4. Generate Obsidian-ready `.md` file with Excalidraw frontmatter
 5. **Automatically save to current working directory**
 6. Notify user with file path and confirm save successful
+
+## Use in Obsidian
+
+The generated `.md` file is Obsidian-ready and can be opened directly in Obsidian. **Prerequisites:**
+
+- Install the [Excalidraw plugin](https://github.com/zsviczian/obsidian-excalidraw-plugin) in Obsidian.
+- Keep the frontmatter exactly as generated (`excalidraw-plugin: parsed` and `tags: [excalidraw]`).
+- Switch to **Excalidraw view** from the note's "More options" menu to edit the diagram.
+
+The file follows [`obsidian-markdown`](../obsidian-markdown/SKILL.md) conventions for frontmatter and tags. For diagram templates and quality checks, see `obsidian-markdown`.
 
 ## Output Format
 
@@ -306,3 +316,10 @@ Axton_2026商业模式.relationship.md
 
 需要调整吗？比如改变布局、添加更多细节或调整配色，直接告诉我！
 ```
+
+## References
+
+- [Excalidraw Obsidian Plugin](https://github.com/zsviczian/obsidian-excalidraw-plugin)
+- [`obsidian-markdown`](../obsidian-markdown/SKILL.md) — Obsidian note syntax and frontmatter conventions
+
+This skill follows the [Agent Skills specification](https://agentskills.io/specification). Validate with [`skill-spec`](../skill-spec/scripts/validate.py).

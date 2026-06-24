@@ -1,6 +1,8 @@
 ---
 name: mermaid-visualizer
 description: Transform text content into professional Mermaid diagrams for presentations and documentation. Use when users ask to visualize concepts, create flowcharts, or make diagrams from text. Supports process flows, system architectures, comparisons, mindmaps, and more with built-in syntax error prevention.
+metadata:
+  version: 1.1.0
 ---
 
 # Mermaid Visualizer
@@ -24,6 +26,23 @@ When creating a Mermaid diagram:
 - Medium detail level (balanced between simplicity and information)
 - Professional color scheme with semantic colors
 - Obsidian/GitHub compatible syntax
+
+## Use in Obsidian
+
+To render a generated diagram inside an Obsidian note, wrap the Mermaid code in a `mermaid` code fence:
+
+````markdown
+```mermaid
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Do this]
+    B -->|No| D[Do that]
+```
+````
+
+To link Mermaid nodes to Obsidian notes, add `class NodeName internal-link;` and refer to [`obsidian-markdown`](../obsidian-markdown/SKILL.md).
+
+For RAG or research scenarios with complex relationship graphs, consider using `mermaid-visualizer` together with [`obsidian-graph-rag`](../obsidian-graph-rag/SKILL.md).
 
 ## Diagram Types
 
@@ -273,3 +292,5 @@ Before outputting, verify:
 
 For detailed syntax rules and troubleshooting, see:
 - [references/syntax-rules.md](references/syntax-rules.md) - Complete syntax reference and error prevention
+
+This skill follows the [Agent Skills specification](https://agentskills.io/specification). Validate with [`skill-spec`](../skill-spec/scripts/validate.py).

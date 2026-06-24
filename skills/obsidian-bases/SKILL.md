@@ -1,6 +1,8 @@
 ---
 name: obsidian-bases
 description: Create and edit Obsidian Bases (.base files) with views, filters, formulas, and summaries. Use when working with .base files, creating database-like views of notes, or when the user mentions Bases, table views, card views, filters, or formulas in Obsidian.
+metadata:
+  version: 1.2.0
 ---
 
 # Obsidian Bases Skill
@@ -13,6 +15,22 @@ description: Create and edit Obsidian Bases (.base files) with views, filters, f
 4. **Configure views**: Add one or more views (`table`, `cards`, `list`, or `map`) with `order` specifying which properties to display
 5. **Validate**: Verify the file is valid YAML with no syntax errors. Check that all referenced properties and formulas exist. Common issues: unquoted strings containing special YAML characters, mismatched quotes in formula expressions, referencing `formula.X` without defining `X` in `formulas`
 6. **Test in Obsidian**: Open the `.base` file in Obsidian to confirm the view renders correctly. If it shows a YAML error, check quoting rules below
+
+## Design Frontmatter for Bases
+
+Bases rely on consistent frontmatter across your notes. When creating notes with [`obsidian-markdown`](../obsidian-markdown/SKILL.md), use stable property names and types so filters and formulas work reliably.
+
+Recommended conventions:
+
+| Property | Type | Example use in Bases |
+|----------|------|---------------------|
+| `tags` | list | `filters: tag = #project` |
+| `status` | text | `filters: status = "in-progress"` |
+| `date` | date | `filters: date >= 2024-01-01` |
+| `priority` | text | `formulas: priority_score` |
+| `source` | text | display original document URL |
+
+See [`obsidian-markdown`](../obsidian-markdown/SKILL.md) for frontmatter syntax, templates, and the Quality Checklist.
 
 ## Schema
 
@@ -103,17 +121,7 @@ filters:
 
 ### Filter Operators
 
-| Operator | Description |
-|----------|-------------|
-| `==` | equals |
-| `!=` | not equal |
-| `>` | greater than |
-| `<` | less than |
-| `>=` | greater than or equal |
-| `<=` | less than or equal |
-| `&&` | logical and |
-| `\|\|` | logical or |
-| <code>!</code> | logical not |
+See [references/FILTER_OPERATORS.md](references/FILTER_OPERATORS.md) for the full operator reference.
 
 ## Properties
 
@@ -125,21 +133,7 @@ filters:
 
 ### File Properties Reference
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `file.name` | String | File name |
-| `file.basename` | String | File name without extension |
-| `file.path` | String | Full path to file |
-| `file.folder` | String | Parent folder path |
-| `file.ext` | String | File extension |
-| `file.size` | Number | File size in bytes |
-| `file.ctime` | Date | Created time |
-| `file.mtime` | Date | Modified time |
-| `file.tags` | List | All tags in file |
-| `file.links` | List | Internal links in file |
-| `file.backlinks` | List | Files linking to this file |
-| `file.embeds` | List | Embeds in the note |
-| `file.properties` | Object | All frontmatter properties |
+See [references/FILE_PROPERTIES.md](references/FILE_PROPERTIES.md) for the full list of available file metadata properties.
 
 ### The `this` Keyword
 
@@ -257,34 +251,32 @@ views:
 
 ### Map View
 
-Requires latitude/longitude properties and the Maps community plugin.
+Requires latitude/longitude properties and the [Maps community plugin](https://github.com/esm7/obsidian-map-view).
+
+Store coordinates in frontmatter:
+
+```yaml
+---
+location: [40.7128, -74.0060]
+city: "New York"
+---
+```
+
+Then configure a map view:
 
 ```yaml
 views:
   - type: map
     name: "Locations"
-    # Map-specific settings for lat/lng properties
+    order:
+      - file.name
+      - city
+    # The Maps plugin uses the `location` property by default
 ```
 
 ## Default Summary Formulas
 
-| Name | Input Type | Description |
-|------|------------|-------------|
-| `Average` | Number | Mathematical mean |
-| `Min` | Number | Smallest number |
-| `Max` | Number | Largest number |
-| `Sum` | Number | Sum of all numbers |
-| `Range` | Number | Max - Min |
-| `Median` | Number | Mathematical median |
-| `Stddev` | Number | Standard deviation |
-| `Earliest` | Date | Earliest date |
-| `Latest` | Date | Latest date |
-| `Range` | Date | Latest - Earliest |
-| `Checked` | Boolean | Count of true values |
-| `Unchecked` | Boolean | Count of false values |
-| `Empty` | Any | Count of empty values |
-| `Filled` | Any | Count of non-empty values |
-| `Unique` | Any | Count of unique values |
+See [references/SUMMARY_FORMULAS.md](references/SUMMARY_FORMULAS.md) for the full list of built-in summaries.
 
 ## Complete Examples
 
@@ -411,6 +403,44 @@ views:
       - file.mtime
 ```
 
+### Retrieval Tracking Base (RAG)
+
+Use this base to track candidates retrieved by [`obsidian-graph-rag-retrieval`](../obsidian-graph-rag-retrieval/SKILL.md). Store retrieval results in `.obsidian-rag-session/` with properties `score`, `depth`, and `reason`.
+
+```yaml
+filters:
+  and:
+    - file.inFolder(".obsidian-rag-session")
+    - 'file.ext == "md"'
+
+formulas:
+  confidence_label: 'if(score >= 12, "🟢 High", if(score >= 6, "🟡 Medium", "🔴 Low"))'
+  depth_badge: 'if(depth == 1, "1 hop", if(depth == 2, "2 hops", "3 hops+"))'
+
+properties:
+  formula.confidence_label:
+    displayName: "Confidence"
+  formula.depth_badge:
+    displayName: "Depth"
+
+views:
+  - type: table
+    name: "Retrieved Candidates"
+    order:
+      - file.name
+      - formula.confidence_label
+      - score
+      - formula.depth_badge
+      - reason
+    groupBy:
+      property: formula.confidence_label
+      direction: DESC
+    summaries:
+      score: Average
+```
+
+See [`obsidian-graph-rag-retrieval/references/EXPORT-TEMPLATES.md`](../obsidian-graph-rag-retrieval/references/EXPORT-TEMPLATES.md) for the companion `.base` template.
+
 ## Embedding Bases
 
 Embed in Markdown files:
@@ -422,6 +452,29 @@ Embed in Markdown files:
 ![[MyBase.base#View Name]]
 ```
 
+## Bases vs Dataview
+
+Both tools create dynamic views from your notes. Choose based on your needs:
+
+| | `obsidian-bases` | Dataview (community plugin) |
+|---|---|---|
+| **Availability** | Built into Obsidian | Community plugin |
+| **Configuration** | YAML in `.base` files | DataviewJS or DQL inline queries |
+| **Best for** | Stable, reusable views; embedding in notes | Ad-hoc complex queries; scripting |
+| **Embedding** | `![[MyBase.base#View Name]]` | Dataview blocks inside notes |
+| **Power** | Filters, formulas, summaries, grouping | Full JavaScript (DataviewJS), transclusion |
+| **Portability** | Works in any Obsidian install | Requires Dataview plugin |
+
+Use Bases when you want a reusable database view that feels native to Obsidian. Use Dataview when you need complex logic or one-off queries that Bases cannot express.
+
+## Performance Tips
+
+- **Always filter**: Avoid loading the entire vault. Use `file.inFolder()`, `file.hasTag()`, or property filters to limit scope.
+- **Limit views**: Add `limit` to large views, especially when embedding bases in other notes.
+- **Prefer simple formulas**: Nested formulas and date arithmetic on many rows can slow rendering. Cache results in frontmatter when possible.
+- **Index tags and properties**: Use consistent tags and property names so Bases can rely on Obsidian's metadata cache.
+- **Avoid deep nesting**: More than 2-3 levels of nested `and`/`or` filters become hard to maintain and slower to evaluate.
+
 ## YAML Quoting Rules
 
 - Use single quotes for formulas containing double quotes: `'if(done, "Yes", "No")'`
@@ -430,63 +483,7 @@ Embed in Markdown files:
 
 ## Troubleshooting
 
-### YAML Syntax Errors
-
-**Unquoted special characters**: Strings containing `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` `` must be quoted.
-
-```yaml
-# WRONG - colon in unquoted string
-displayName: Status: Active
-
-# CORRECT
-displayName: "Status: Active"
-```
-
-**Mismatched quotes in formulas**: When a formula contains double quotes, wrap the entire formula in single quotes.
-
-```yaml
-# WRONG - double quotes inside double quotes
-formulas:
-  label: "if(done, "Yes", "No")"
-
-# CORRECT - single quotes wrapping double quotes
-formulas:
-  label: 'if(done, "Yes", "No")'
-```
-
-### Common Formula Errors
-
-**Duration math without field access**: Subtracting dates returns a Duration, not a number. Always access `.days`, `.hours`, etc.
-
-```yaml
-# WRONG - Duration is not a number
-"(now() - file.ctime).round(0)"
-
-# CORRECT - access .days first, then round
-"(now() - file.ctime).days.round(0)"
-```
-
-**Missing null checks**: Properties may not exist on all notes. Use `if()` to guard.
-
-```yaml
-# WRONG - crashes if due_date is empty
-"(date(due_date) - today()).days"
-
-# CORRECT - guard with if()
-'if(due_date, (date(due_date) - today()).days, "")'
-```
-
-**Referencing undefined formulas**: Ensure every `formula.X` in `order` or `properties` has a matching entry in `formulas`.
-
-```yaml
-# This will fail silently if 'total' is not defined in formulas
-order:
-  - formula.total
-
-# Fix: define it
-formulas:
-  total: "price * quantity"
-```
+See [references/TROUBLESHOOTING.md](references/TROUBLESHOOTING.md) for common YAML and formula errors.
 
 ## References
 
@@ -495,3 +492,9 @@ formulas:
 - [Views](https://help.obsidian.md/bases/views)
 - [Formulas](https://help.obsidian.md/formulas)
 - [Complete Functions Reference](references/FUNCTIONS_REFERENCE.md)
+- [File Properties Reference](references/FILE_PROPERTIES.md)
+- [Filter Operators](references/FILTER_OPERATORS.md)
+- [Summary Formulas](references/SUMMARY_FORMULAS.md)
+- [Troubleshooting](references/TROUBLESHOOTING.md)
+
+This skill follows the [Agent Skills specification](https://agentskills.io/specification). Validate with [`skill-spec`](../skill-spec/scripts/validate.py).

@@ -1,0 +1,137 @@
+{
+  "nodes": [
+    {
+      "id": "node1",
+      "type": "text",
+      "x": 350,
+      "y": 40,
+      "width": 300,
+      "height": 70,
+      "text": "## External Sources"
+    },
+    {
+      "id": "node2",
+      "type": "text",
+      "x": 100,
+      "y": 160,
+      "width": 160,
+      "height": 50,
+      "text": "markitdown"
+    },
+    {
+      "id": "node3",
+      "type": "text",
+      "x": 370,
+      "y": 160,
+      "width": 160,
+      "height": 50,
+      "text": "marker"
+    },
+    {
+      "id": "node4",
+      "type": "text",
+      "x": 640,
+      "y": 160,
+      "width": 160,
+      "height": 50,
+      "text": "defuddle"
+    },
+    {
+      "id": "node5",
+      "type": "text",
+      "x": 350,
+      "y": 260,
+      "width": 300,
+      "height": 70,
+      "text": "## Markdown Files"
+    },
+    {
+      "id": "node6",
+      "type": "text",
+      "x": 350,
+      "y": 380,
+      "width": 300,
+      "height": 70,
+      "text": "## obsidian-graph-rag-ingest"
+    },
+    {
+      "id": "node7",
+      "type": "text",
+      "x": 425,
+      "y": 480,
+      "width": 150,
+      "height": 40,
+      "text": "normalize"
+    },
+    {
+      "id": "node8",
+      "type": "text",
+      "x": 350,
+      "y": 560,
+      "width": 300,
+      "height": 70,
+      "text": "## Obsidian Vault"
+    },
+    {
+      "id": "node9",
+      "type": "text",
+      "x": 350,
+      "y": 680,
+      "width": 300,
+      "height": 70,
+      "text": "## obsidian-graph-rag-retrieval"
+    },
+    {
+      "id": "node10",
+      "type": "text",
+      "x": 350,
+      "y": 800,
+      "width": 300,
+      "height": 70,
+      "text": "## Research Notes"
+    },
+    {
+      "id": "node11",
+      "type": "text",
+      "x": 60,
+      "y": 820,
+      "width": 180,
+      "height": 50,
+      "text": "obsidian-bases"
+    },
+    {
+      "id": "node12",
+      "type": "text",
+      "x": 410,
+      "y": 910,
+      "width": 180,
+      "height": 50,
+      "text": "json-canvas"
+    },
+    {
+      "id": "node13",
+      "type": "text",
+      "x": 760,
+      "y": 820,
+      "width": 180,
+      "height": 50,
+      "text": "mermaid-visualizer"
+    }
+  ],
+  "edges": [
+    { "id": "e1", "fromNode": "node1", "toNode": "node2", "toEnd": "arrow" },
+    { "id": "e2", "fromNode": "node1", "toNode": "node3", "toEnd": "arrow" },
+    { "id": "e3", "fromNode": "node1", "toNode": "node4", "toEnd": "arrow" },
+    { "id": "e4", "fromNode": "node2", "toNode": "node5", "toEnd": "arrow" },
+    { "id": "e5", "fromNode": "node3", "toNode": "node5", "toEnd": "arrow" },
+    { "id": "e6", "fromNode": "node4", "toNode": "node5", "toEnd": "arrow" },
+    { "id": "e7", "fromNode": "node5", "toNode": "node6", "toEnd": "arrow" },
+    { "id": "e8", "fromNode": "node6", "toNode": "node7", "toEnd": "arrow" },
+    { "id": "e9", "fromNode": "node7", "toNode": "node8", "toEnd": "arrow" },
+    { "id": "e10", "fromNode": "node8", "toNode": "node9", "toEnd": "arrow" },
+    { "id": "e11", "fromNode": "node9", "toNode": "node10", "toEnd": "arrow" },
+    { "id": "e12", "fromNode": "node10", "toNode": "node11", "toEnd": "arrow" },
+    { "id": "e13", "fromNode": "node10", "toNode": "node12", "toEnd": "arrow" },
+    { "id": "e14", "fromNode": "node10", "toNode": "node13", "toEnd": "arrow" }
+  ]
+}
